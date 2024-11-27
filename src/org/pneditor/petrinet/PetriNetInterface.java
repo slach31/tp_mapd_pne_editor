@@ -3,6 +3,8 @@ package org.pneditor.petrinet;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.pneditor.petrinet.adapters.lachguer.PlaceAdapter;
+
 import logger.PNEditorLogger;
 
 public abstract class PetriNetInterface {

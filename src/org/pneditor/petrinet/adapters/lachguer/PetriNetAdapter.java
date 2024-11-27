@@ -10,6 +10,8 @@ import org.pneditor.petrinet.PetriNetInterface;
 import org.pneditor.petrinet.ResetArcMultiplicityException;
 import org.pneditor.petrinet.UnimplementedCaseException;
 
+import org.pneditor.petrinet.adapters.lachguer.*;
+
 import org.pneditor.petrinet.models.lachguer.souissi.Arc;
 import org.pneditor.petrinet.models.lachguer.souissi.EnArc;
 import org.pneditor.petrinet.models.lachguer.souissi.ExArc;
@@ -60,10 +62,10 @@ public class PetriNetAdapter extends PetriNetInterface {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	
 	@Override
 	public void removePlace(AbstractPlace place) {
-		this.petri.removePlace(place.);
+		// TODO Auto-generated method stub
 		
 	}
 
