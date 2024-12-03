@@ -13,14 +13,29 @@ import org.pneditor.petrinet.models.lachguer.souissi.Transition;
 
 public class ArcAdapter extends AbstractArc {
 	
-	private Arc arc;
-	private EnArc enarc;
-	private ExArc exarc;
-	private ZArc zarc;
-	private EmArc emarc;
+	private Arc arc; 
+    private AbstractNode source;
+    private AbstractNode destination;
 	
-	public ArcAdapter(Place associatedPlace, Transition associatedTransition) {
-		
+	public ArcAdapter(AbstractNode source, AbstractNode destination) {
+		this.source = source;
+        this.destination = destination;
+
+        if (source instanceof PlaceAdapter && destination instanceof TransitionAdapter) {
+            Place place = ((PlaceAdapter) source).getActualPlace();
+            Transition transition = ((TransitionAdapter) destination).getActualTransition();
+            this.arc = new ExArc(1, place, transition);
+            
+    }
+        else if (source instanceof TransitionAdapter && destination instanceof PlaceAdapter) {
+            Place place = ((PlaceAdapter) destination).getActualPlace();
+            Transition transition = ((TransitionAdapter) source).getActualTransition();
+            this.arc = new EnArc(1, place, transition);
+      
+    }
+        else {
+        	throw new IllegalArgumentException("Invalid inputs");
+        }
 	}
 	
 	public ExArc createExArc(int weight, Place associatedPlace, Transition associatedTransition) {
@@ -42,13 +57,13 @@ public class ArcAdapter extends AbstractArc {
 	@Override
 	public AbstractNode getSource() {
 		// TODO Auto-generated method stub
-		return null;
+		return this.source;
 	}
 
 	@Override
 	public AbstractNode getDestination() {
 		// TODO Auto-generated method stub
-		return null;
+		return this.destination;
 	}
 
 	@Override
@@ -72,13 +87,17 @@ public class ArcAdapter extends AbstractArc {
 	@Override
 	public int getMultiplicity() throws ResetArcMultiplicityException {
 		// TODO Auto-generated method stub
-		return 0;
+		return this.arc.getWeight();
 	}
 
 	@Override
 	public void setMultiplicity(int multiplicity) throws ResetArcMultiplicityException {
-		// TODO Auto-generated method stub
+		this.arc.setWeight(multiplicity);
 		
+	}
+	
+	public Arc getActualArc() {
+		return this.arc;
 	}
 
 }

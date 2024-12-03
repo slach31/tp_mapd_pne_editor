@@ -46,13 +46,17 @@ public class PetriNetAdapter extends PetriNetInterface {
 	@Override
 	public AbstractArc addRegularArc(AbstractNode source, AbstractNode destination) throws UnimplementedCaseException {
 		// TODO Auto-generated method stub
-		return null;
+		ArcAdapter adapter = new ArcAdapter(source, destination);
+		Arc arc = adapter.getActualArc();
+		this.petri.addArc(arc);
+		return adapter;
 	}
 
 	@Override
 	public AbstractArc addInhibitoryArc(AbstractPlace place, AbstractTransition transition)
 			throws UnimplementedCaseException {
 		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
@@ -66,31 +70,38 @@ public class PetriNetAdapter extends PetriNetInterface {
 	@Override
 	public void removePlace(AbstractPlace place) {
 		// TODO Auto-generated method stub
-		
+		PlaceAdapter placeAdapter = (PlaceAdapter) place;
+        petri.removePlace(placeAdapter.getActualPlace());
 	}
 
 	@Override
 	public void removeTransition(AbstractTransition transition) {
 		// TODO Auto-generated method stub
-		
+		TransitionAdapter transitionAdapter = (TransitionAdapter) transition;
+        petri.removeTransition(transitionAdapter.getActualTransition());
 	}
 
 	@Override
 	public void removeArc(AbstractArc arc) {
 		// TODO Auto-generated method stub
-		
+		ArcAdapter arcAdapter = (ArcAdapter) arc;
+        petri.removeArc(arcAdapter.getActualArc());
 	}
 
 	@Override
 	public boolean isEnabled(AbstractTransition transition) throws ResetArcMultiplicityException {
 		// TODO Auto-generated method stub
-		return false;
+		TransitionAdapter transitionAdapter = (TransitionAdapter) transition;
+        Transition t = transitionAdapter.getActualTransition();
+        return t.isFeasible();
 	}
 
 	@Override
 	public void fire(AbstractTransition transition) throws ResetArcMultiplicityException {
 		// TODO Auto-generated method stub
-		
+		TransitionAdapter transitionAdapter = (TransitionAdapter) transition;
+        Transition t = transitionAdapter.getActualTransition();
+        t.execute();
 	}
 
 }

@@ -45,6 +45,14 @@ public abstract class Arc {
     }
 
     /**
+     * Changes the weight of the arc.
+     * 
+     */
+    public void setWeight(int newWeight) {
+        this.weight = newWeight;
+    }
+    
+    /**
      * Returns the associated Place of the arc.
      * 
      * @return The Place object linked to this arc.
