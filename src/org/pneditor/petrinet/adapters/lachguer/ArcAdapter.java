@@ -38,55 +38,47 @@ public class ArcAdapter extends AbstractArc {
         }
 	}
 	
-	public ExArc createExArc(int weight, Place associatedPlace, Transition associatedTransition) {
-		return new ExArc(weight,  associatedPlace, associatedTransition);
+	public Arc makeIntoInhibitoryArc() {
+		Place place = ((PlaceAdapter) this.source).getActualPlace();
+        Transition transition = ((TransitionAdapter) this.destination).getActualTransition();
+		this.arc = new ZArc(place, transition);
+		return this.arc;
 	}
 	
-	public EnArc createEnArc(int weight, Place associatedPlace, Transition associatedTransition) {
-		return new EnArc(weight,  associatedPlace, associatedTransition);
-	}
-	
-	public EmArc createResetArc(int weight, Place associatedPlace, Transition associatedTransition) {
-		return new EmArc(weight,  associatedPlace, associatedTransition);
-	}
-	
-	public ZArc createInhibitoryArc(Place associatedPlace, Transition associatedTransition) {
-		return new ZArc(associatedPlace, associatedTransition);
+	public Arc makeIntoResetArc() {
+		Place place = ((PlaceAdapter) this.source).getActualPlace();
+        Transition transition = ((TransitionAdapter) this.destination).getActualTransition();
+		this.arc = new EmArc(1, place, transition);
+		return this.arc;
 	}
 
 	@Override
 	public AbstractNode getSource() {
-		// TODO Auto-generated method stub
 		return this.source;
 	}
 
 	@Override
 	public AbstractNode getDestination() {
-		// TODO Auto-generated method stub
 		return this.destination;
 	}
 
 	@Override
 	public boolean isReset() {
-		// TODO Auto-generated method stub
-		return false;
+		return (this.arc instanceof EmArc);
 	}
 
 	@Override
 	public boolean isRegular() {
-		// TODO Auto-generated method stub
-		return false;
+		return ((!(this.arc instanceof EmArc)) && (!(this.arc instanceof ZArc)));
 	}
 
 	@Override
 	public boolean isInhibitory() {
-		// TODO Auto-generated method stub
-		return false;
+		return (this.arc instanceof EmArc);
 	}
 
 	@Override
 	public int getMultiplicity() throws ResetArcMultiplicityException {
-		// TODO Auto-generated method stub
 		return this.arc.getWeight();
 	}
 

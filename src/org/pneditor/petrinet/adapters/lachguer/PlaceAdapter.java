@@ -10,7 +10,6 @@ public class PlaceAdapter extends AbstractPlace {
 	public PlaceAdapter(String label) {
 		super(label);
 		this.place = new Place(0);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override

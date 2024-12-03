@@ -12,7 +12,6 @@ public class TransitionAdapter extends AbstractTransition {
 		super(label);
 		this.transition = new Transition();
 		 
-		// TODO Auto-generated constructor stub
 	}
 
 	public Transition getActualTransition() {
