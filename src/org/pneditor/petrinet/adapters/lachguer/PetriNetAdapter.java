@@ -96,22 +96,34 @@ public class PetriNetAdapter extends PetriNetInterface {
 	@Override
 	public AbstractArc addResetArc(AbstractPlace place, AbstractTransition transition)
 			throws UnimplementedCaseException {
-				for (ArcAdapter adapter : this.arcAdaptersList) {
-					AbstractNode source = adapter.getSource();
-					AbstractNode destination = adapter.getDestination();
-					if ((source instanceof TransitionAdapter) && (destination instanceof PlaceAdapter)) {
-						continue;
-					}
-					else if ((source instanceof PlaceAdapter) && (destination instanceof TransitionAdapter)) {
-						if ((source.equals(place)) && (destination.equals(transition))){
-							this.removeArc(adapter);
-							ArcAdapter newAdapter = new ArcAdapter(source, destination); 
-							
-							return newAdapter;
-						}
-					}
-				}
-				return null;
+		ArcAdapter matchingAdapter = null;
+	    for (ArcAdapter adapter : this.arcAdaptersList) {
+	        AbstractNode source = adapter.getSource();
+	        AbstractNode destination = adapter.getDestination();
+	        if ((source instanceof PlaceAdapter) && (destination instanceof TransitionAdapter)) {
+	            if (source.equals(place) && destination.equals(transition)) {
+	                matchingAdapter = adapter;
+	                break;
+	            }
+	        }
+	    }
+	    if (matchingAdapter != null) {
+	        // Convert existing arc to reset
+	        Arc oldArc = matchingAdapter.getActualArc();
+	        Arc newArc = matchingAdapter.makeIntoResetArc();
+	        // Remove old arc from Petri net
+	        petri.removeArc(oldArc);
+	        // Add new reset arc
+	        petri.addArc(newArc);
+	        return matchingAdapter;
+	    } else {
+	        // Create a new reset arc
+	        ArcAdapter newAdapter = new ArcAdapter(place, transition);
+	        newAdapter.makeIntoResetArc();
+	        petri.addArc(newAdapter.getActualArc());
+	        arcAdaptersList.add(newAdapter);
+	        return newAdapter;
+	    }
 	}
 	
 	@Override
