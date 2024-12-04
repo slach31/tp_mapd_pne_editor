@@ -92,8 +92,12 @@ public class ArcAdapter extends AbstractArc {
 
 	@Override
 	public void setMultiplicity(int multiplicity) throws ResetArcMultiplicityException {
-		this.arc.setWeight(multiplicity);
-		
+	    if (isInhibitory()) {
+	        // Set a default weight for inhibitory arcs
+	        this.arc.setWeight(1);
+	    } else {
+	        this.arc.setWeight(multiplicity);
+	    }
 	}
 	
 	public Arc getActualArc() {

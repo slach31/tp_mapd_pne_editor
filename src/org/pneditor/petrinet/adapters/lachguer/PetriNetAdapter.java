@@ -62,24 +62,35 @@ public class PetriNetAdapter extends PetriNetInterface {
 
 	@Override
 	public AbstractArc addInhibitoryArc(AbstractPlace place, AbstractTransition transition)
-			throws UnimplementedCaseException {
-		for (ArcAdapter adapter : this.arcAdaptersList) {
-			AbstractNode source = adapter.getSource();
-			AbstractNode destination = adapter.getDestination();
-			if ((source instanceof TransitionAdapter) && (destination instanceof PlaceAdapter)) {
-				continue;
-			}
-			else if ((source instanceof PlaceAdapter) && (destination instanceof TransitionAdapter)) {
-				if ((source.equals(place)) && (destination.equals(transition))){
-					Arc arc = adapter.getActualArc();
-					this.petri.addArc(adapter.makeIntoInhibitoryArc());
-					this.petri.removeArc(arc);
-					return adapter;
-				}
-			}
-		}
-		return null;
-		
+	        throws UnimplementedCaseException {
+	    ArcAdapter matchingAdapter = null;
+	    for (ArcAdapter adapter : this.arcAdaptersList) {
+	        AbstractNode source = adapter.getSource();
+	        AbstractNode destination = adapter.getDestination();
+	        if ((source instanceof PlaceAdapter) && (destination instanceof TransitionAdapter)) {
+	            if (source.equals(place) && destination.equals(transition)) {
+	                matchingAdapter = adapter;
+	                break;
+	            }
+	        }
+	    }
+	    if (matchingAdapter != null) {
+	        // Convert existing arc to inhibitory
+	        Arc oldArc = matchingAdapter.getActualArc();
+	        Arc newArc = matchingAdapter.makeIntoInhibitoryArc();
+	        // Remove old arc from Petri net
+	        petri.removeArc(oldArc);
+	        // Add new inhibitory arc
+	        petri.addArc(newArc);
+	        return matchingAdapter;
+	    } else {
+	        // Create a new inhibitory arc
+	        ArcAdapter newAdapter = new ArcAdapter(place, transition);
+	        newAdapter.makeIntoInhibitoryArc();
+	        petri.addArc(newAdapter.getActualArc());
+	        arcAdaptersList.add(newAdapter);
+	        return newAdapter;
+	    }
 	}
 
 	@Override
@@ -122,7 +133,7 @@ public class PetriNetAdapter extends PetriNetInterface {
 	public void removeArc(AbstractArc arc) {
 		ArcAdapter arcAdapter = (ArcAdapter) arc;
         this.petri.removeArc(arcAdapter.getActualArc());
-        this.arcAdaptersList.remove(arc);
+        this.arcAdaptersList.remove(arcAdapter);
 	}
 
 	@Override
