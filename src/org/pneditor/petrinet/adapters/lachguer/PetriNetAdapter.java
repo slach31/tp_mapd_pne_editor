@@ -23,10 +23,14 @@ public class PetriNetAdapter extends PetriNetInterface {
 	
 	private PetriNet petri;
 	private List<ArcAdapter> arcAdaptersList; 
+	private List<PlaceAdapter> placeAdaptersList; 
+	private List<TransitionAdapter> transitionAdaptersList; 
 	
 	public PetriNetAdapter() {
 		this.petri = new PetriNet(new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
-		this.arcAdaptersList = new LinkedList<>();
+		this.arcAdaptersList = new ArrayList<>();
+		this.placeAdaptersList = new ArrayList<>();
+		this.transitionAdaptersList = new ArrayList<>();
 	}
 	
 	@Override
@@ -34,6 +38,7 @@ public class PetriNetAdapter extends PetriNetInterface {
 		PlaceAdapter adapter = new PlaceAdapter("place");
 		Place place = adapter.getActualPlace();
 		this.petri.addPlace(place);
+		this.placeAdaptersList.add(adapter);
 		return adapter;
 	}
 
@@ -42,6 +47,7 @@ public class PetriNetAdapter extends PetriNetInterface {
 		TransitionAdapter adapter = new TransitionAdapter("transition");
 		Transition transition = adapter.getActualTransition();
 		this.petri.addTransition(transition);
+		this.transitionAdaptersList.add(adapter);
 		return adapter;
 	}
 
@@ -66,8 +72,8 @@ public class PetriNetAdapter extends PetriNetInterface {
 			else if ((source instanceof PlaceAdapter) && (destination instanceof TransitionAdapter)) {
 				if ((source.equals(place)) && (destination.equals(transition))){
 					Arc arc = adapter.getActualArc();
-					Arc newArc = adapter.makeIntoInhibitoryArc();
-					this.petri.addArc(newArc);
+					this.petri.addArc(adapter.makeIntoInhibitoryArc());
+					this.petri.removeArc(arc);
 					return adapter;
 				}
 			}
@@ -87,10 +93,10 @@ public class PetriNetAdapter extends PetriNetInterface {
 					}
 					else if ((source instanceof PlaceAdapter) && (destination instanceof TransitionAdapter)) {
 						if ((source.equals(place)) && (destination.equals(transition))){
-							Arc arc = adapter.getActualArc();
-							Arc newArc = adapter.makeIntoResetArc();
-							this.petri.addArc(newArc);
-							return adapter;
+							this.removeArc(adapter);
+							ArcAdapter newAdapter = new ArcAdapter(source, destination); 
+							
+							return newAdapter;
 						}
 					}
 				}
@@ -100,33 +106,53 @@ public class PetriNetAdapter extends PetriNetInterface {
 	@Override
 	public void removePlace(AbstractPlace place) {
 		PlaceAdapter placeAdapter = (PlaceAdapter) place;
-        petri.removePlace(placeAdapter.getActualPlace());
+        this.petri.removePlace(placeAdapter.getActualPlace());
+        this.placeAdaptersList.remove(placeAdapter);
+        
 	}
 
 	@Override
 	public void removeTransition(AbstractTransition transition) {
 		TransitionAdapter transitionAdapter = (TransitionAdapter) transition;
-        petri.removeTransition(transitionAdapter.getActualTransition());
+        this.petri.removeTransition(transitionAdapter.getActualTransition());
+        this.transitionAdaptersList.remove(transitionAdapter);
 	}
 
 	@Override
 	public void removeArc(AbstractArc arc) {
 		ArcAdapter arcAdapter = (ArcAdapter) arc;
-        petri.removeArc(arcAdapter.getActualArc());
+        this.petri.removeArc(arcAdapter.getActualArc());
+        this.arcAdaptersList.remove(arc);
 	}
 
 	@Override
 	public boolean isEnabled(AbstractTransition transition) throws ResetArcMultiplicityException {
-		TransitionAdapter transitionAdapter = (TransitionAdapter) transition;
-        Transition t = transitionAdapter.getActualTransition();
-        return t.isFeasible();
+	     if (!(transition instanceof TransitionAdapter)) {
+	        throw new IllegalArgumentException("Invalid transition type.");
+	    }
+	    TransitionAdapter transitionAdapter = (TransitionAdapter) transition;
+	    for (TransitionAdapter registeredTransition : this.transitionAdaptersList) {
+	        if (registeredTransition.equals(transitionAdapter)) {
+	            Transition t = registeredTransition.getActualTransition();
+	            return t.isFeasible();
+	        }
+	    }
+	    return false; 
 	}
 
 	@Override
 	public void fire(AbstractTransition transition) throws ResetArcMultiplicityException {
-		TransitionAdapter transitionAdapter = (TransitionAdapter) transition;
-        Transition t = transitionAdapter.getActualTransition();
-        t.execute();
+	    if (!(transition instanceof TransitionAdapter)) {
+	        throw new IllegalArgumentException("Invalid transition type.");
+	    }
+	    TransitionAdapter transitionAdapter = (TransitionAdapter) transition;
+	    for (TransitionAdapter registeredTransition : this.transitionAdaptersList) {
+	        if (registeredTransition.equals(transitionAdapter)) {
+	            Transition t = registeredTransition.getActualTransition();
+	            t.execute();
+	            return;
+	        }
+	    }
 	}
 
 }

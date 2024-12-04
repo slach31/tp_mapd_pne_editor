@@ -38,7 +38,7 @@ public class Transition {
      * Executes the transition by firing all exiting and entering arcs, if feasible.
      */
     public void execute() {
-        if (isFeasible()) {
+        if (this.isFeasible()) {
             for (ExArc arc : exArcs) {
                 arc.executeMove();
             }

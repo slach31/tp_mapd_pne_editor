@@ -25,12 +25,16 @@ public class ArcAdapter extends AbstractArc {
             Place place = ((PlaceAdapter) source).getActualPlace();
             Transition transition = ((TransitionAdapter) destination).getActualTransition();
             this.arc = new ExArc(1, place, transition);
+            transition.addExArc((ExArc) arc);
+            place.addExArc((ExArc) arc);
             
     }
         else if (source instanceof TransitionAdapter && destination instanceof PlaceAdapter) {
             Place place = ((PlaceAdapter) destination).getActualPlace();
             Transition transition = ((TransitionAdapter) source).getActualTransition();
             this.arc = new EnArc(1, place, transition);
+            transition.addEnArc((EnArc) arc);
+            place.addEnArc((EnArc) arc);
       
     }
         else {
@@ -42,14 +46,18 @@ public class ArcAdapter extends AbstractArc {
 		Place place = ((PlaceAdapter) this.source).getActualPlace();
         Transition transition = ((TransitionAdapter) this.destination).getActualTransition();
 		this.arc = new ZArc(place, transition);
-		return this.arc;
+		transition.addExArc((ZArc) this.arc);
+        place.addExArc((ZArc) this.arc);
+        return this.arc;
 	}
 	
 	public Arc makeIntoResetArc() {
 		Place place = ((PlaceAdapter) this.source).getActualPlace();
         Transition transition = ((TransitionAdapter) this.destination).getActualTransition();
 		this.arc = new EmArc(1, place, transition);
-		return this.arc;
+		transition.addExArc((EmArc) this.arc);
+        place.addExArc((EmArc) this.arc);
+        return this.arc;
 	}
 
 	@Override
@@ -74,7 +82,7 @@ public class ArcAdapter extends AbstractArc {
 
 	@Override
 	public boolean isInhibitory() {
-		return (this.arc instanceof EmArc);
+		return (this.arc instanceof ZArc);
 	}
 
 	@Override
