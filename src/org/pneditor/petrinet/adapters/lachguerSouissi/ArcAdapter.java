@@ -1,4 +1,4 @@
-package org.pneditor.petrinet.adapters.lachguer.souissi;
+package org.pneditor.petrinet.adapters.lachguerSouissi;
 
 import org.pneditor.petrinet.AbstractArc;
 import org.pneditor.petrinet.AbstractNode;

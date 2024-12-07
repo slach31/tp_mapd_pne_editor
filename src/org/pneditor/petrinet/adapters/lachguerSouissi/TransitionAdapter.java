@@ -1,4 +1,4 @@
-package org.pneditor.petrinet.adapters.lachguer.souissi;
+package org.pneditor.petrinet.adapters.lachguerSouissi;
 
 import org.pneditor.petrinet.AbstractTransition;
 import org.pneditor.petrinet.models.lachguer.souissi.Arc;

@@ -1,4 +1,4 @@
-package org.pneditor.petrinet.adapters.lachguer.souissi;
+package org.pneditor.petrinet.adapters.lachguerSouissi;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -11,7 +11,7 @@ import org.pneditor.petrinet.AbstractTransition;
 import org.pneditor.petrinet.PetriNetInterface;
 import org.pneditor.petrinet.ResetArcMultiplicityException;
 import org.pneditor.petrinet.UnimplementedCaseException;
-import org.pneditor.petrinet.adapters.lachguer.souissi.*;
+import org.pneditor.petrinet.adapters.lachguerSouissi.*;
 import org.pneditor.petrinet.models.lachguer.souissi.Arc;
 import org.pneditor.petrinet.models.lachguer.souissi.PetriNet;
 import org.pneditor.petrinet.models.lachguer.souissi.Place;
